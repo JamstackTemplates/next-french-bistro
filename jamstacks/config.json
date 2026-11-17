@@ -1,0 +1,19 @@
+{
+  "name": "French bistro",
+  "description": "A Parisian bistro theme in oxblood, brass and cream: a striped awning, the day's menu hand-lettered on an antique mirror, a carte with prix-fixe formules, enamel street-plaque headings, wines by the glass, pot and bottle, lunch and dinner services, location and a Jamstacks contact component for private dining, groups and celebrations.",
+  "tech": "next",
+  "type": "french",
+  "style": "bistro",
+  "internal": false,
+  "components": [
+    "support-form"
+  ],
+  "configFile": "site.config.json",
+  "screenshots": {
+    "light": "jamstacks/home-light.jpg",
+    "dark": "jamstacks/home-dark.jpg",
+    "theme": {
+      "strategy": "media"
+    }
+  }
+}

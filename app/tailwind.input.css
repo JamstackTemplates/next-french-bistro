@@ -1,0 +1,668 @@
+/* Bistro du Lampadaire styles: Tailwind CSS v4 plus this template's customizations.
+   Components use Tailwind utility classes; this file holds what utilities can't:
+   1. colour tokens for light/dark   2. the Tailwind theme built from them
+   3. base element styles           4. shared building blocks (.button, .plaque, .ardoise, ...)
+   5. illustrations and animation   6. stateful pieces styled by data attributes */
+@import 'tailwindcss';
+
+/* `dark:` follows the jamstacks theme toggle (html.dark). Prefer colour tokens instead. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ------------------------------------------------------------------
+   1. Colour tokens. Change the palette here.
+   Light mode is "midi en terrasse" (lunch on the terrace): a cream paper tablecloth, oxblood and brass.
+   Dark mode is "le soir au zinc" (evening at the zinc): dark linen, warm brass and lamplight.
+   Every colour that changes with the theme is a variable here, so components use
+   utilities like `bg-surface text-ink` and never need `dark:` variants.
+   ------------------------------------------------------------------ */
+:root {
+  --bg: #f4ecdc;
+  --surface: #faf5ea;
+  --surface-2: #ece1cb;
+  --text: #231b18;
+  --muted: #5d4f45;
+  --line: #d9c8a8;
+  --rule: #b49e76;
+  --accent: #6d1a1f;
+  --accent-strong: #4f1115;
+  --accent-soft: #ecd6cb;
+  --button: #6d1a1f;
+  --button-hover: #561418;
+  --on-button: #ffffff;
+  --brass: #b08d57;
+  --brass-ink: #7d6235;
+  --brass-light: #e2c891;
+  --brass-dark: #7a5a2b;
+  --enamel: #1f3a5f;
+  --enamel-frame: #2e5a3a;
+  --enamel-ink: #fbf8f0;
+  --veg: #2e4a3a;
+  --focus: #1f3a5f;
+  --paper-opacity: .07;
+  --linen-opacity: 0;
+
+  /* The awning */
+  --awning-red: #6d1a1f;
+  --awning-cream: #f1e5cc;
+  --valance: #6d1a1f;
+  --valance-ink: #f6ead2;
+  --gold: #e6c47c;
+
+  /* The mirror: mid grey-green glass with warm foxing; the room's reflection very faint */
+  --glass-1: #56635a;
+  --glass-2: #6a776a;
+  --glass-3: #48534b;
+  --foxing: rgba(176, 128, 66, .32);
+  --silver-edge: rgba(52, 40, 22, .55);
+  --reflection: rgba(255, 252, 240, .07);
+  --bloom: rgba(255, 214, 150, .10);
+  --writing: #fdfbf4;
+  --banquette: #6d1a1f;
+  --banquette-dark: #4a1013;
+  --banquette-light: #8c2b30;
+
+  /* Ardoises (slates) in oak frames */
+  --slate: #25292b;
+  --slate-2: #313638;
+  --chalk: #f5f2ea;
+  --oak: #8d5f36;
+  --oak-dark: #6a4524;
+  --oak-light: #a87a4c;
+
+  /* Line drawings and the street lamp */
+  --art-line: #3b2c22;
+  --art-fill: #fbf6ea;
+  --art-food: #c9925a;
+  --art-wine: #6d1a1f;
+  --lamp-iron: #2c3a33;
+  --lamp-glass: #efe7d2;
+  --lamp-light: #ffd98f;
+  --lamp-on: 0;
+
+  /* Footer: the zinc counter, the brass foot-rail and the cabochon mosaic floor */
+  --footer-bg: #221b17;
+  --floor-white: #ece5d6;
+  --floor-black: #1d1b1a;
+  --floor-grout: #c9bfae;
+
+  /* Google Maps embed: untouched in light mode */
+  --map-filter: none;
+
+  --measure: 40rem;
+  --page: 76rem;
+  --gutter: clamp(1rem, 4.5vw, 2.75rem);
+  --space-section: clamp(4rem, 8vw, 7rem);
+  --header-h: 5.75rem;
+  --header-compact: 3.4rem;
+
+  /* --------------------------------------------------------------
+     Jamstacks component fallbacks (inherited by hosted components).
+     Published portal themes may override these on the host element.
+     Never style the component's shadow-root internals directly.
+     -------------------------------------------------------------- */
+  --jamstacks-font-family: var(--font-sans);
+  --jamstacks-font-size: 16px;
+  --jamstacks-color-primary: #6d1a1f;
+  --jamstacks-color-background: var(--surface);
+  --jamstacks-color-text: var(--text);
+  --jamstacks-color-muted: var(--muted);
+  --jamstacks-color-border: var(--rule);
+  --jamstacks-color-danger: #9b1c24;
+  --jamstacks-color-success: #2e5a3a;
+  --jamstacks-border-radius: var(--radius-ui);
+  --jamstacks-control-height: 48px;
+  --jamstacks-spacing: 14px;
+  /* Component extension supported by the current support-form runtime: fill the page column. */
+  --jamstacks-form-max-width: 100%;
+
+  /* Shared theme toggle (jamstacks package); it sits on the oxblood valance in both modes. */
+  --jamstacks-toggle-color: var(--valance-ink);
+  --jamstacks-toggle-dark-color: var(--valance-ink);
+  --jamstacks-toggle-border: color-mix(in srgb, var(--valance-ink) 35%, transparent);
+  --jamstacks-toggle-background: transparent;
+  --jamstacks-toggle-dark-background: transparent;
+
+  color-scheme: light;
+}
+
+/* Explicit choices override the device; the media fallback also works without JavaScript.
+   Keep these two blocks identical. */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    color-scheme: dark;
+    --bg: #15100e;
+    --surface: #211915;
+    --surface-2: #2a201b;
+    --text: #efe4d0;
+    --muted: #bfae95;
+    --line: #3e3129;
+    --rule: #6a5640;
+    --accent: #c4525a;
+    --accent-strong: #e2878d;
+    --accent-soft: #3a1b1d;
+    --button: #8e2a31;
+    --button-hover: #a5363e;
+    --on-button: #ffffff;
+    --brass: #d6b06a;
+    --brass-ink: #d6b06a;
+    --brass-light: #f0d49a;
+    --brass-dark: #8a6a35;
+    --enamel: #1f3a5f;
+    --enamel-frame: #3b6e4a;
+    --enamel-ink: #f6f1e4;
+    --veg: #93c4a0;
+    --focus: #d6b06a;
+    --paper-opacity: 0;
+    --linen-opacity: .025;
+
+    --awning-red: #571318;
+    --awning-cream: #cdbb98;
+    --valance: #4d1115;
+    --valance-ink: #f3e5c8;
+    --gold: #edc97f;
+
+    --glass-1: #2a322d;
+    --glass-2: #39423b;
+    --glass-3: #222925;
+    --foxing: rgba(190, 140, 70, .22);
+    --silver-edge: rgba(0, 0, 0, .6);
+    --reflection: rgba(255, 230, 180, .05);
+    --bloom: rgba(255, 196, 110, .5);
+    --writing: #fff8ea;
+    --banquette: #5a1519;
+    --banquette-dark: #380b0e;
+    --banquette-light: #74242a;
+
+    --slate: #1b1e1f;
+    --slate-2: #262a2c;
+    --chalk: #f1ece0;
+    --oak: #6b4627;
+    --oak-dark: #4c2f17;
+    --oak-light: #85603a;
+
+    --art-line: #e3d2b4;
+    --art-fill: #2a201b;
+    --art-food: #b98450;
+    --art-wine: #c4525a;
+    --lamp-iron: #11161a;
+    --lamp-glass: #fff2cf;
+    --lamp-light: #ffcf7a;
+    --lamp-on: 1;
+
+    --footer-bg: #0f0b0a;
+    --floor-white: #b9b1a2;
+    --floor-black: #121110;
+    --floor-grout: #8d8576;
+
+    --map-filter: invert(.9) hue-rotate(180deg) sepia(.25) saturate(.7) brightness(.9) contrast(.9);
+  }
+}
+
+:root.dark {
+  color-scheme: dark;
+  --bg: #15100e;
+  --surface: #211915;
+  --surface-2: #2a201b;
+  --text: #efe4d0;
+  --muted: #bfae95;
+  --line: #3e3129;
+  --rule: #6a5640;
+  --accent: #c4525a;
+  --accent-strong: #e2878d;
+  --accent-soft: #3a1b1d;
+  --button: #8e2a31;
+  --button-hover: #a5363e;
+  --on-button: #ffffff;
+  --brass: #d6b06a;
+  --brass-ink: #d6b06a;
+  --brass-light: #f0d49a;
+  --brass-dark: #8a6a35;
+  --enamel: #1f3a5f;
+  --enamel-frame: #3b6e4a;
+  --enamel-ink: #f6f1e4;
+  --veg: #93c4a0;
+  --focus: #d6b06a;
+  --paper-opacity: 0;
+  --linen-opacity: .025;
+
+  --awning-red: #571318;
+  --awning-cream: #cdbb98;
+  --valance: #4d1115;
+  --valance-ink: #f3e5c8;
+  --gold: #edc97f;
+
+  --glass-1: #2a322d;
+  --glass-2: #39423b;
+  --glass-3: #222925;
+  --foxing: rgba(190, 140, 70, .22);
+  --silver-edge: rgba(0, 0, 0, .6);
+  --reflection: rgba(255, 230, 180, .05);
+  --bloom: rgba(255, 196, 110, .5);
+  --writing: #fff8ea;
+  --banquette: #5a1519;
+  --banquette-dark: #380b0e;
+  --banquette-light: #74242a;
+
+  --slate: #1b1e1f;
+  --slate-2: #262a2c;
+  --chalk: #f1ece0;
+  --oak: #6b4627;
+  --oak-dark: #4c2f17;
+  --oak-light: #85603a;
+
+  --art-line: #e3d2b4;
+  --art-fill: #2a201b;
+  --art-food: #b98450;
+  --art-wine: #c4525a;
+  --lamp-iron: #11161a;
+  --lamp-glass: #fff2cf;
+  --lamp-light: #ffcf7a;
+  --lamp-on: 1;
+
+  --footer-bg: #0f0b0a;
+  --floor-white: #b9b1a2;
+  --floor-black: #121110;
+  --floor-grout: #8d8576;
+
+  --map-filter: invert(.9) hue-rotate(180deg) sepia(.25) saturate(.7) brightness(.9) contrast(.9);
+}
+
+/* ------------------------------------------------------------------
+   2. Tailwind theme. Only this template's palette exists: Tailwind's default colours
+   are switched off so new UI can't drift into a generic look.
+   ------------------------------------------------------------------ */
+@theme {
+  --color-*: initial;
+  --breakpoint-xs: 25rem;
+  --breakpoint-sm: 40rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 80rem;
+}
+
+@theme static {
+  --font-display: "Gloock", "Didot", "Bodoni 72", Georgia, serif;
+  --font-sans: "Instrument Sans Variable", "Helvetica Neue", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-script: "Parisienne", "Snell Roundhand", "Apple Chancery", cursive;
+  --radius-ui: 4px;
+  --radius-card: 6px;
+}
+
+@theme inline {
+  --color-white: #fff;
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--text);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-rule: var(--rule);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-soft: var(--accent-soft);
+  --color-button: var(--button);
+  --color-on-button: var(--on-button);
+  --color-brass: var(--brass);
+  --color-brass-ink: var(--brass-ink);
+  --color-enamel: var(--enamel);
+  --color-enamel-ink: var(--enamel-ink);
+  --color-veg: var(--veg);
+  --color-valance: var(--valance);
+  --color-valance-ink: var(--valance-ink);
+  --color-gold: var(--gold);
+  --color-writing: var(--writing);
+  --color-chalk: var(--chalk);
+  --color-slate: var(--slate);
+  --color-footer: var(--footer-bg);
+  /* Footer text sits on the always-dark zinc counter in both modes. */
+  --color-footer-ink: #ece1cc;
+  --color-footer-muted: #b9a98e;
+  --color-footer-accent: #e6c47c;
+}
+
+/* Layout helpers used across pages. */
+@utility wrap {
+  width: min(100% - 2 * var(--gutter), var(--page));
+  margin-inline: auto;
+}
+@utility section-y {
+  padding-block: var(--space-section);
+}
+/* Bold condensed capitals, as on the enamel plaques. */
+@utility condensed {
+  font-family: var(--font-sans);
+  font-stretch: 75%;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+/* French dish names on the carte. */
+@utility dish-name {
+  font-variant-caps: small-caps;
+  font-weight: 600;
+  letter-spacing: .045em;
+}
+@utility tabular {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* ------------------------------------------------------------------
+   3. Base elements
+   ------------------------------------------------------------------ */
+@layer base {
+  /* Anchor jumps always scroll, so the awning is compact (about 3.4rem) when the target lands. */
+  html { background: var(--bg); scroll-padding-top: calc(var(--header-compact) + 1rem); }
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg);
+    /* Dark linen in dark mode: a faint woven crosshatch. Invisible in light mode. */
+    background-image:
+      repeating-linear-gradient(0deg, rgb(255 255 255 / var(--linen-opacity)) 0 1px, transparent 1px 3px),
+      repeating-linear-gradient(90deg, rgb(0 0 0 / calc(var(--linen-opacity) * 3)) 0 1px, transparent 1px 3px);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+  /* Paper-tablecloth crinkle over everything in light mode; purely decorative. */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    pointer-events: none;
+    opacity: var(--paper-opacity);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .04' numOctaves='3' seed='4'/%3E%3CfeDiffuseLighting lighting-color='%23fff' surfaceScale='2'%3E%3CfeDistantLight azimuth='45' elevation='55'/%3E%3C/feDiffuseLighting%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode: multiply;
+  }
+  main { flex: 1; outline: none; }
+  h1, h2, h3 { font-family: var(--font-display); font-weight: 400; line-height: 1.08; letter-spacing: -.005em; text-wrap: balance; }
+  p { text-wrap: pretty; }
+  abbr[title] { text-decoration: none; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 2px; }
+  ::selection { background: var(--accent-soft); color: var(--text); }
+  @media (width < 40rem) {
+    :root { --header-h: 5rem; }
+    body { font-size: 1rem; }
+  }
+}
+
+/* ------------------------------------------------------------------
+   4. Shared building blocks. Reuse these instead of restyling each instance.
+   ------------------------------------------------------------------ */
+@layer components {
+  .button {
+    display: inline-flex; align-items: center; justify-content: center; gap: .55rem;
+    min-height: 3rem; padding: .7rem 1.35rem;
+    border: 1px solid var(--button); border-radius: var(--radius-ui);
+    background: var(--button); color: var(--on-button);
+    font: inherit; font-weight: 600; letter-spacing: .02em; text-decoration: none; cursor: pointer;
+    box-shadow: inset 0 0 0 3px var(--button), inset 0 0 0 4px color-mix(in srgb, var(--on-button) 35%, transparent);
+    transition: background .15s ease, box-shadow .15s ease;
+  }
+  .button:hover { background: var(--button-hover); box-shadow: inset 0 0 0 3px var(--button-hover), inset 0 0 0 4px color-mix(in srgb, var(--on-button) 55%, transparent); }
+  .button-ghost { background: transparent; color: var(--text); border-color: var(--rule); box-shadow: none; }
+  .button-ghost:hover { background: var(--surface); border-color: var(--brass); box-shadow: inset 0 0 0 1px var(--brass); }
+  .button-quiet { min-height: 2.5rem; padding: .35rem 1rem; background: transparent; color: var(--text); border-color: var(--rule); box-shadow: none; font-weight: 600; }
+  .button-quiet:hover { background: var(--surface); box-shadow: none; }
+
+  .text-link {
+    color: var(--accent); font-weight: 600;
+    text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .22em;
+    text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+  .text-link:hover { text-decoration-color: var(--accent); text-decoration-thickness: 2px; }
+
+  /* Small letter-spaced brass label above headings. */
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: .6rem;
+    font-size: .78rem; font-weight: 600; letter-spacing: .2em; text-transform: uppercase;
+    color: var(--brass-ink);
+  }
+  .eyebrow::before, .eyebrow::after { content: ""; width: 1.5rem; height: 1px; background: currentColor; }
+
+  /* A double brass rule, like the edge of a printed carte. */
+  .brass-rule { height: 5px; border-block: 1px solid var(--brass); }
+
+  /* Paris-style enamel street plaque: blue enamel, white keyline, green frame, condensed capitals.
+     Generic: never a real street's plaque. The optional tab carries a number. */
+  .plaque {
+    position: relative; display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
+    min-width: 9rem; padding: .5em 1.25em .55em;
+    border: 4px solid var(--enamel-frame); border-radius: 12px;
+    background: linear-gradient(170deg, color-mix(in srgb, var(--enamel) 82%, white) -40%, var(--enamel) 45%, color-mix(in srgb, var(--enamel) 85%, black));
+    box-shadow: inset 0 0 0 3px var(--enamel), inset 0 0 0 4.5px var(--enamel-ink), 0 2px 0 rgb(0 0 0 / .18), 0 10px 18px -12px rgb(0 0 0 / .45);
+    color: var(--enamel-ink);
+    font-family: var(--font-sans); font-stretch: 75%; font-weight: 700; text-transform: uppercase; letter-spacing: .05em;
+    line-height: 1.05; text-align: center;
+  }
+  .plaque__tab {
+    position: absolute; bottom: calc(100% - 2px); left: 50%; translate: -50% 0;
+    padding: .2em .8em .25em; border: 3px solid var(--enamel-frame); border-bottom: 0; border-radius: 8px 8px 0 0;
+    background: var(--enamel); box-shadow: inset 0 0 0 2px var(--enamel), inset 0 0 0 3px var(--enamel-ink);
+    font-size: .42em; letter-spacing: .12em; white-space: nowrap;
+  }
+
+  /* An ardoise: a small black slate in an oak frame, written in white. */
+  .ardoise {
+    position: relative; padding: 13px; border-radius: 5px;
+    background:
+      repeating-linear-gradient(92deg, transparent 0 7px, rgb(0 0 0 / .08) 7px 9px, transparent 9px 17px),
+      linear-gradient(180deg, var(--oak-light), var(--oak) 40%, var(--oak-dark));
+    box-shadow: 0 1px 0 rgb(255 255 255 / .15) inset, 0 18px 30px -18px rgb(30 15 5 / .65), 0 3px 6px rgb(30 15 5 / .2);
+  }
+  .ardoise__slate {
+    position: relative; height: 100%; padding: clamp(1.1rem, 3vw, 1.6rem);
+    border-radius: 2px; color: var(--chalk);
+    background:
+      radial-gradient(70% 50% at 30% 20%, rgb(255 255 255 / .07), transparent 70%),
+      radial-gradient(50% 40% at 80% 85%, rgb(255 255 255 / .05), transparent 70%),
+      linear-gradient(170deg, var(--slate-2), var(--slate));
+    box-shadow: inset 0 2px 6px rgb(0 0 0 / .55);
+  }
+
+  /* Diet marks on the carte. */
+  .mark {
+    display: inline-grid; place-items: center; min-width: 1.45rem; height: 1.45rem; padding-inline: .25rem;
+    border: 1px solid var(--rule); border-radius: 999px;
+    font-size: .64rem; font-weight: 700; font-variant-caps: normal; letter-spacing: .02em; color: var(--muted);
+    cursor: help; vertical-align: middle;
+  }
+  .mark-vegetarian { border-color: var(--veg); color: var(--veg); }
+  .mark-vegan { border-color: var(--veg); background: var(--veg); color: var(--bg); }
+  .mark-gluten-free { border-color: var(--brass); color: var(--brass-ink); }
+  .mark-contains-nuts, .mark-contains-shellfish { border-style: dashed; }
+
+  /* Filter toggles above the carte. */
+  .filter {
+    display: inline-flex; align-items: center; gap: .4rem; min-height: 2.4rem; padding: .3rem .95rem;
+    border: 1px solid var(--rule); border-radius: 999px; background: transparent; color: var(--text);
+    font: inherit; font-size: .92rem; font-weight: 600; cursor: pointer; white-space: nowrap;
+  }
+  .filter:hover { border-color: var(--brass); }
+  .filter[aria-pressed="true"] { background: var(--enamel); border-color: var(--enamel); color: var(--enamel-ink); }
+  .filter[aria-pressed="true"]::before { content: "✓"; }
+}
+
+/* ------------------------------------------------------------------
+   5. Illustrations and animation (SVG art is coloured by the tokens above)
+   ------------------------------------------------------------------ */
+@layer components {
+  /* The awning header: striped canopy, then the oxblood valance with a scalloped edge.
+     The canopy compresses when the page scrolls (html[data-scrolled], set by components/awning-scroll.tsx). */
+  .awning { position: sticky; top: 0; z-index: 50; filter: drop-shadow(0 6px 6px rgb(30 10 5 / .18)); }
+  .awning__canopy {
+    height: 1.5rem;
+    background:
+      linear-gradient(180deg, rgb(255 255 255 / .16), transparent 40%, rgb(0 0 0 / .22)),
+      repeating-linear-gradient(90deg, var(--awning-red) 0 2.25rem, var(--awning-cream) 2.25rem 4.5rem);
+    transition: height .35s ease;
+  }
+  .awning__valance { position: relative; background: var(--valance); color: var(--valance-ink); }
+  .awning__valance::before {
+    /* Gold piping along the bottom of the valance. */
+    content: ""; position: absolute; inset: auto 0 4px; height: 1px; background: color-mix(in srgb, var(--gold) 55%, transparent);
+  }
+  .awning__valance::after {
+    /* Scallops. */
+    content: ""; position: absolute; left: 0; right: 0; top: 100%; height: .7rem;
+    background: radial-gradient(circle at 1.125rem 0, var(--valance) .95rem, transparent calc(.95rem + 1px)) 0 0 / 2.25rem .7rem repeat-x;
+  }
+  .awning__row { min-height: 3.6rem; transition: min-height .35s ease; }
+  .awning__name { color: var(--gold); text-shadow: 0 1px 0 rgb(0 0 0 / .35); }
+  :root[data-scrolled] .awning__canopy { height: .35rem; }
+  :root[data-scrolled] .awning__row { min-height: 3rem; }
+  .awning__link { color: var(--valance-ink); text-decoration: none; }
+  .awning__link:hover { color: var(--gold); }
+  .awning__link[aria-current] { color: var(--gold); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .35em; }
+
+  /* The mirror: a brass frame with an arched top around softly foxed grey-green glass. */
+  .mirror {
+    position: relative; padding: clamp(12px, 1.6vw, 20px);
+    border-radius: 48% 48% 8px 8px / clamp(60px, 9vw, 110px) clamp(60px, 9vw, 110px) 8px 8px;
+    background: linear-gradient(135deg, var(--brass-light), var(--brass) 22%, var(--brass-dark) 48%, var(--brass) 70%, var(--brass-light));
+    box-shadow: inset 0 0 0 1px var(--brass-dark), inset 0 0 0 4px var(--brass-light), inset 0 0 0 5px var(--brass-dark),
+      0 30px 50px -28px rgb(40 20 5 / .55), 0 2px 4px rgb(40 20 5 / .2);
+  }
+  .mirror__glass {
+    position: relative; overflow: hidden; isolation: isolate;
+    border-radius: inherit;
+    background:
+      radial-gradient(65% 45% at 92% 2%, var(--bloom), transparent 72%),
+      radial-gradient(14% 10% at 8% 92%, var(--foxing), transparent 70%),
+      radial-gradient(10% 8% at 94% 70%, var(--foxing), transparent 70%),
+      radial-gradient(6% 5% at 20% 12%, var(--foxing), transparent 70%),
+      radial-gradient(18% 6% at 60% 99%, var(--foxing), transparent 70%),
+      linear-gradient(162deg, var(--glass-2), var(--glass-1) 48%, var(--glass-3));
+    box-shadow: inset 0 0 0 2px var(--brass-dark), inset 0 0 50px 6px var(--silver-edge);
+    color: var(--writing);
+  }
+  .mirror__glass::after {
+    /* Silvering spots: cheap SVG noise, kept faint. */
+    content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: .16; mix-blend-mode: soft-light;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.06' numOctaves='3' seed='9'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .9 0 0 0 0 .7 0 0 0 1.6 -.6'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
+  }
+  .mirror__reflection { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; color: var(--reflection); pointer-events: none; }
+  .mirror__script { font-family: var(--font-script); font-weight: 400; line-height: 1.05; letter-spacing: 0; }
+  .mirror__label { font-size: .72rem; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: color-mix(in srgb, var(--writing) 78%, transparent); }
+  .mirror__text { text-shadow: 0 0 1px rgb(255 255 255 / .35), 0 1px 1px rgb(0 0 0 / .25); }
+  .mirror__link { color: inherit; text-decoration: none; }
+  .mirror__link:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .2em; }
+
+  /* The handwriting draws in once, line by line (--line sets the order). */
+  .write-in { animation: write-in .7s cubic-bezier(.4, .1, .3, 1) both; animation-delay: calc(var(--line, 0) * 110ms + 150ms); }
+
+  .banquette { display: block; width: 100%; height: auto; margin-top: -6px; }
+
+  /* Wine vessels and dish drawings: fine brass or ink line. */
+  .vessel { overflow: visible; fill: none; stroke: var(--brass); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+  .vessel__wine { fill: color-mix(in srgb, var(--art-wine) 70%, transparent); stroke: none; }
+  .dish-art { overflow: visible; fill: none; stroke: var(--art-line); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+  .dish-art .fill { fill: var(--art-fill); }
+  .dish-art .food { fill: color-mix(in srgb, var(--art-food) 35%, transparent); }
+  .dish-art .brass { stroke: var(--brass); }
+  .line-art { overflow: visible; fill: none; stroke: var(--art-line); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* The street lamp (le lampadaire), lit in dark mode. */
+  .lamp { overflow: visible; }
+  .lamp__iron { fill: var(--lamp-iron); }
+  .lamp__glass { fill: var(--lamp-glass); stroke: var(--lamp-iron); stroke-width: 2; }
+  .lamp__glow { opacity: var(--lamp-on); }
+
+  /* Google Maps embed in a brass frame; --map-filter turns it into a night map in dark mode. */
+  .map { position: relative; overflow: hidden; min-height: 20rem; border: 1px solid var(--brass-dark); border-radius: 2px; background: var(--surface-2); }
+  .map iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; filter: var(--map-filter); }
+  .brass-frame {
+    padding: 10px; border-radius: 4px;
+    background: linear-gradient(135deg, var(--brass-light), var(--brass) 30%, var(--brass-dark) 55%, var(--brass) 80%, var(--brass-light));
+    box-shadow: inset 0 0 0 1px var(--brass-dark), 0 24px 40px -26px rgb(40 20 5 / .6);
+  }
+
+  /* The zinc top of the counter, at the top of the footer. */
+  .zinc-edge { height: 10px; background: linear-gradient(180deg, #e3e6e6, #a9afb0 45%, #757b7d 80%, #4b5052); }
+
+  /* The brass foot-rail along the bottom of the zinc counter. */
+  .foot-rail {
+    position: relative; height: 14px;
+    background: linear-gradient(180deg, var(--brass-light), var(--brass) 40%, var(--brass-dark) 85%, color-mix(in srgb, var(--brass-dark) 60%, black));
+    box-shadow: 0 6px 10px rgb(0 0 0 / .45);
+  }
+  .foot-rail::before {
+    /* Brackets that hold the rail to the counter. */
+    content: ""; position: absolute; inset: -18px 0 auto; height: 18px;
+    background: linear-gradient(90deg, transparent 0 calc(50% - 5px), var(--brass-dark) calc(50% - 5px) calc(50% + 5px), transparent calc(50% + 5px)) 0 0 / 14rem 100% repeat-x;
+  }
+  .floor { display: block; width: 100%; }
+  .floor__white { fill: var(--floor-white); stroke: var(--floor-grout); stroke-width: .6; }
+  .floor__black { fill: var(--floor-black); }
+
+  @keyframes write-in { from { clip-path: inset(-10% 100% -20% -2%); opacity: .4; } to { clip-path: inset(-10% -2% -20% -2%); opacity: 1; } }
+  @keyframes flicker-on {
+    0% { opacity: 0; } 12% { opacity: .7; } 18% { opacity: .1; } 30% { opacity: .85; } 36% { opacity: .3; } 60%, 100% { opacity: 1; }
+  }
+}
+
+/* The lamp flickers on once, only in dark mode. */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) .lamp__glow { animation: flicker-on 1.6s ease-out .4s both; }
+}
+:root.dark .lamp__glow { animation: flicker-on 1.6s ease-out .4s both; }
+
+/* ------------------------------------------------------------------
+   6. Stateful pieces styled by attributes the components set
+   ------------------------------------------------------------------ */
+@layer components {
+  /* Service status dot: serving, between services, or closed. No dot claim without JavaScript. */
+  .status-dot { width: .55rem; height: .55rem; flex: none; border-radius: 50%; border: 1px solid currentColor; opacity: .7; }
+  [data-tone="serving"] > .status-dot { background: #7fd39a; border-color: #7fd39a; opacity: 1; box-shadow: 0 0 0 3px rgb(127 211 154 / .25); }
+  [data-tone="between"] > .status-dot { background: var(--gold); border-color: var(--gold); opacity: 1; }
+  [data-tone="closed"] > .status-dot { background: transparent; opacity: .8; }
+
+  /* Sold out: a hand-drawn line through the dish. */
+  .struck { position: relative; display: inline; }
+  .strike-line { position: absolute; left: -3%; top: 50%; width: 106%; height: .7em; translate: 0 -45%; overflow: visible; fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; pointer-events: none; }
+  [data-sold-out="true"] .carte-price { opacity: .55; text-decoration: line-through; text-decoration-color: var(--accent); }
+  [data-sold-out="true"] .carte-desc { opacity: .7; }
+
+  .carte-row:target { background: color-mix(in srgb, var(--brass) 14%, transparent); box-shadow: -0.75rem 0 0 color-mix(in srgb, var(--brass) 14%, transparent), 0.75rem 0 0 color-mix(in srgb, var(--brass) 14%, transparent); }
+  .carte-row[hidden] { display: none; }
+
+  .faq summary { list-style: none; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: "+"; flex: none; display: grid; place-items: center; width: 1.7rem; height: 1.7rem; border: 1px solid var(--brass); border-radius: 50%; color: var(--brass-ink); font-family: var(--font-sans); font-size: 1.1rem; line-height: 1; transition: transform .2s ease; }
+  .faq[open] summary::after { transform: rotate(45deg); }
+
+
+  /* Hosted Jamstacks form host (components/jamstacks-support-form.tsx). */
+  .enquiry { position: relative; padding: clamp(1rem, 3vw, 2rem); border: 1px solid var(--rule); border-radius: var(--radius-card); background: var(--surface); box-shadow: inset 0 0 0 4px var(--surface), inset 0 0 0 5px var(--line); }
+  .enquiry__host { display: block; }
+  .enquiry[data-state="loading"], .enquiry[data-state="loaded"] { min-height: 34rem; border-style: dashed; }
+  .enquiry__status { padding: 1.25rem 0 0; color: var(--muted); font-size: .9875rem; }
+  .enquiry__status:empty { display: none; }
+  .enquiry[data-state="error"] .enquiry__status,
+  .enquiry[data-state="slow"] .enquiry__status { padding: 1.1rem 1.4rem; border-left: 3px solid var(--accent); background: var(--surface-2); color: var(--text); }
+  @media (width < 40rem) { .enquiry[data-state="loading"], .enquiry[data-state="loaded"] { min-height: 30rem; } }
+
+  .copy-status:empty { display: none; }
+  .scrollbar-none { scrollbar-width: none; }
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  html { scroll-behavior: auto; }
+}
+
+@media print {
+  body { background: #fff; color: #000; }
+  body::after { display: none; }
+  .awning { position: static; filter: none; }
+  .awning__canopy, .awning__valance::after { display: none; }
+  .write-in { animation: none; clip-path: none; }
+  .carte-row { break-inside: avoid; }
+  .site-footer { background: #fff; color: #000; }
+}

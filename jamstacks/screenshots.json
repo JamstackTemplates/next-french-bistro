@@ -1,0 +1,22 @@
+{
+  "templateId": "next-french-bistro",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "fullPage": false,
+  "captures": [
+    {
+      "mode": "light",
+      "sha256": "0fbdcd3a7eaa53b407e2181c0584fabfd2fda144662d4763ef46949cb66ebe49",
+      "file": "jamstacks/home-light.jpg",
+      "bytes": 151398
+    },
+    {
+      "mode": "dark",
+      "sha256": "e68ccab5703fe7775930dccd6fa2dee66dd45e5e8a528eee88a422d52894ce7c",
+      "file": "jamstacks/home-dark.jpg",
+      "bytes": 172572
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "name": "Bistro du Lampadaire",
+  "description": "A corner bistro with a zinc bar and a small terrace: the plat du jour on the mirror, a lunch formule, a dinner prix-fixe and wines by the glass, pot and bottle.",
+  "domain": "next-french-bistro.jamstacks.net",
+  "timeZone": "America/Chicago",
+  "jamstacks": {
+    "siteId": "",
+    "cdnUrl": "https://cdn.jamstacks.net"
+  }
+}
